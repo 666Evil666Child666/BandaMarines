@@ -1,0 +1,7 @@
+#include "_boiler_sniper.dm"
+
+#include "code/_defines.dm"
+#include "code/abilities.dm"
+#include "code/macros.dm"
+#include "code/powers.dm"
+#include "code/sniper.dm"
