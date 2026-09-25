@@ -309,6 +309,13 @@
 
 	building = FALSE
 
+	// SS220 EDIT START ADDICTION
+	var/mob/living/blocking_mob = src.get_living_non_xeno_blocking_resin(Turf)
+	if(blocking_mob)
+		to_chat(xeno, SPAN_XENOWARNING("Мы не можем завершить постройку, пока [blocking_mob] мешает нам!")) // SS220 EDIT ADDICTION
+		return
+	// SS220 EDIT END ADDICTION
+
 	if(istype(design_mark, /datum/design_mark/resin_wall))
 		if(!istype(Turf, /turf/closed/wall))
 			var/turf/placed
@@ -430,7 +437,25 @@
 		to_chat(xeno, SPAN_WARNING("This is not a valid location."))
 		return FALSE
 
+	// SS220 EDIT START ADDICTION
+	var/mob/living/blocking_mob = src.get_living_non_xeno_blocking_resin(Turf)
+	if(blocking_mob)
+		to_chat(xeno, SPAN_XENOWARNING("Мы не можем строить, пока [blocking_mob] мешает нам!")) // SS220 EDIT ADDICTION
+		return FALSE
+	// SS220 EDIT END ADDICTION
+
 	return TRUE
+
+// SS220 EDIT START ADDICTION
+/obj/effect/alien/resin/design/construct_node/proc/get_living_non_xeno_blocking_resin(turf/Turf)
+	if(!istype(Turf))
+		return
+
+	for(var/mob/living/living_mob in Turf)
+		if(isxeno(living_mob) || living_mob.stat == DEAD)
+			continue
+		return living_mob
+// SS220 EDIT END ADDICTION
 
 /obj/effect/alien/resin/design/construct_node/proc/begin_construction(mob/living/carbon/xenomorph/xeno)
 	if(!can_begin_construction(xeno))

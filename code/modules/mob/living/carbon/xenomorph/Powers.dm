@@ -138,6 +138,13 @@
 	if(!succeeded)
 		return SECRETE_RESIN_INTERRUPT
 
+	// SS220 EDIT START ADDICTION
+	var/mob/living/blocking_mob = resin_construct.get_living_non_xeno_blocking_resin(current_turf)
+	if(blocking_mob)
+		to_chat(src, SPAN_XENOWARNING("Мы не можем завершить постройку, пока [blocking_mob] мешает нам!")) // SS220 EDIT ADDICTION
+		return SECRETE_RESIN_FAIL
+	// SS220 EDIT END ADDICTION
+
 	if(maybe_convert_to_weedbound(current_turf, resin_construct, thick))
 		if(use_plasma)
 			use_plasma(total_resin_cost)

@@ -20,14 +20,32 @@
 	/// Whether this construction gets more expensive the more saturated the area is
 	var/scaling_cost = FALSE
 
+// SS220 EDIT START ADDICTION
+/datum/resin_construction/proc/get_living_non_xeno_blocking_resin(turf/T)
+	if(!istype(T))
+		return
+
+	for(var/mob/living/living_mob in T)
+		if(isxeno(living_mob) || living_mob.stat == DEAD)
+			continue
+		return living_mob
+// SS220 EDIT END ADDICTION
+
 /datum/resin_construction/proc/can_build_here(turf/T, mob/living/carbon/xenomorph/X)
 	var/mob/living/carbon/xenomorph/blocker = locate() in T
 	if(blocker && blocker != X && blocker.stat != DEAD)
-		to_chat(X, SPAN_WARNING("Can't do that with [blocker] in the way!"))
+		to_chat(X, SPAN_XENOWARNING("Мы не можем строить, пока [blocker] мешает нам!")) // SS220 EDIT ADDICTION
 		return FALSE
 
 	if(!istype(T))
 		return FALSE
+
+	// SS220 EDIT START ADDICTION
+	var/mob/living/non_xeno_blocker = src.get_living_non_xeno_blocking_resin(T)
+	if(non_xeno_blocker)
+		to_chat(X, SPAN_XENOWARNING("Мы не можем строить, пока [non_xeno_blocker] мешает нам!")) // SS220 EDIT ADDICTION
+		return FALSE
+	// SS220 EDIT END ADDICTION
 
 	if(T.is_weedable < FULLY_WEEDABLE)
 		var/has_node = FALSE
